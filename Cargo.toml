@@ -1,0 +1,10 @@
+[package]
+name = "apns"
+version = "0.1.0"
+authors = ["Alex.F <gfreezy@gmail.com>"]
+
+[dependencies]
+openssl = "*"
+rustc-serialize = "*"
+byteorder = "*"
+num = "*"
