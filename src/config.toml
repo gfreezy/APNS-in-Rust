@@ -1,1 +1,2 @@
 cert_path = "../Certificates.pem"
+apns_host = "gateway.push.apple.com:2195"

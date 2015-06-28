@@ -28,11 +28,11 @@ pub struct Notification {
 
 impl Notification {
 
+	#[allow(unused_must_use)]
 	pub fn to_bytes(&self) -> Vec<u8> {
-		let mut message_buffer: Vec<u8> = vec![];
-		let payload = &self.payload;
-		let payload_str: String = match json::encode(payload) {
-			Ok(json_str) => json_str.to_string(),
+		let mut message_buffer: Vec<u8> = vec![0;30];
+		let payload_str = match json::encode(&self.payload) {
+			Ok(json_str) => json_str,
 			Err(err) => {
 				println!("json encode error {:?}", err);
 				return message_buffer;
@@ -40,7 +40,7 @@ impl Notification {
 		};
 
 		let payload_bytes = payload_str.into_bytes();
-		let device_token_bytes = self.device_token.as_ref().from_hex().unwrap();
+		let device_token_bytes = self.device_token.from_hex().unwrap();
 
 		// Device token
 		message_buffer.write_u8(DEVICE_TOKEN_ITEM_ID);
@@ -67,15 +67,15 @@ impl Notification {
 		message_buffer.write_u16::<BigEndian>(PRIORITY_LENGTH);
 		message_buffer.write_u8(10u8);
 
-
 		return message_buffer;
 	}
 }
 
 
-pub struct BatchNotifications<'a>(pub Vec<Notification<'a>>);
+pub struct BatchNotifications<'a>(pub &'a Vec<Notification>);
 
 impl<'a> BatchNotifications<'a> {
+	#[allow(unused_must_use)]
 	pub fn to_bytes(&self) -> Vec<u8> {
 		let BatchNotifications(ref notification_list) = *self;
 		let message_buffers: Vec<Vec<u8>> = notification_list.iter().map(|noti| noti.to_bytes()).collect();

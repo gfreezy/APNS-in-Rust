@@ -28,12 +28,12 @@ fn main() {
 
 	let device_token = "3f048a7fe079a3ae3808d45b70f3013afdd004dad4834b525c6ac257ffa4e8cb";
 	let noti = Notification {
-		device_token: device_token,
-		payload: &Payload {
+		device_token: device_token.to_string(),
+		payload: Payload {
 			aps: PayloadAPS {
-				alert: PayloadAPSAlert::Plain("Hello world bb2"),
+				alert: PayloadAPSAlert::Plain("Hello world bb2".to_string()),
 				badge: None,
-				sound: Some("default"),
+				sound: Some("default".to_string()),
 				content_available: None
 			},
 			info: None
@@ -43,12 +43,12 @@ fn main() {
 	};
 
 	let noti2 = Notification {
-		device_token: device_token,
-		payload: &Payload{
+		device_token: device_token.to_string(),
+		payload: Payload{
 			aps: PayloadAPS{
-				alert: PayloadAPSAlert::Plain("Hello aa3"),
+				alert: PayloadAPSAlert::Plain("Hello aa3".to_string()),
 				badge: None,
-				sound: Some("default"),
+				sound: Some("default".to_string()),
 				content_available: None
 			},
 			info: None
@@ -56,7 +56,9 @@ fn main() {
 		identifier: 1100,
 		expire_time: 0
 	};
-	let batch_notis = BatchNotifications(vec![noti, noti2]);
+
+	let notis = vec![noti, noti2];
+	let batch_notis = BatchNotifications(&notis);
 
 	match conn.send_batch_notifications(&batch_notis) {
 		Ok(len) => {

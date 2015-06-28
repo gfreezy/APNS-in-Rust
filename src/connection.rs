@@ -8,8 +8,9 @@ use openssl::ssl::error::SslError;
 use openssl::ssl::SslStream;
 use byteorder::{BigEndian, ReadBytesExt};
 
+
+#[allow(dead_code)]
 pub struct Connection {
-	#[warn(dead_code)]
   cert_path: std::path::PathBuf,
   cert_type: openssl::x509::X509FileType,
   host: String,

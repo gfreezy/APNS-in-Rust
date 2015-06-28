@@ -4,6 +4,7 @@ use toml;
 use openssl;
 
 
+#[allow(dead_code)]
 pub struct Config {
   path: std::path::PathBuf,
   config: toml::Table,
@@ -54,6 +55,7 @@ impl Config {
     "gateway.push.apple.com:2195"
   }
 
+  #[allow(dead_code)]
   pub fn get_config_path(&self) -> &std::path::Path {
     self.path.as_path()
   }
