@@ -1,4 +1,4 @@
-use super::rustc_serialize::{Encodable, Encoder};
+use rustc_serialize::{Encodable, Encoder};
 use std::collections::HashMap;
 
 

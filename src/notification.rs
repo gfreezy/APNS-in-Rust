@@ -1,8 +1,8 @@
-use payload::Payload;
-use super::rustc_serialize::{Encodable, json};
-use super::rustc_serialize::hex::FromHex;
-use byteorder::{BigEndian, WriteBytesExt};
 use std::io::Write;
+use payload::Payload;
+use rustc_serialize::{Encodable, json};
+use rustc_serialize::hex::FromHex;
+use byteorder::{BigEndian, WriteBytesExt};
 
 
 const DEVICE_TOKEN_ITEM_ID: u8 = 1;
@@ -18,19 +18,19 @@ const PUSH_COMMAND_VALUE: u8 = 2;
 
 
 #[derive(Debug, RustcEncodable)]
-pub struct Notification<'a> {
-    pub device_token: &'a str,
-    pub payload: &'a Payload<'a>,
-    pub identifier: u32,
-    pub expire_time: u32
+pub struct Notification {
+	pub device_token: String,
+	pub payload: Payload,
+	pub identifier: u32,
+	pub expire_time: u32
 }
 
 
-impl<'a> Notification<'a> {
+impl Notification {
 
 	pub fn to_bytes(&self) -> Vec<u8> {
 		let mut message_buffer: Vec<u8> = vec![];
-		let payload = self.payload;
+		let payload = &self.payload;
 		let payload_str: String = match json::encode(payload) {
 			Ok(json_str) => json_str.to_string(),
 			Err(err) => {
@@ -40,7 +40,7 @@ impl<'a> Notification<'a> {
 		};
 
 		let payload_bytes = payload_str.into_bytes();
-		let device_token_bytes = self.device_token.from_hex().unwrap();
+		let device_token_bytes = self.device_token.as_ref().from_hex().unwrap();
 
 		// Device token
 		message_buffer.write_u8(DEVICE_TOKEN_ITEM_ID);
@@ -67,6 +67,7 @@ impl<'a> Notification<'a> {
 		message_buffer.write_u16::<BigEndian>(PRIORITY_LENGTH);
 		message_buffer.write_u8(10u8);
 
+
 		return message_buffer;
 	}
 }
@@ -88,5 +89,11 @@ impl<'a> BatchNotifications<'a> {
 		notification_bytes.write_all(&notification_total_buffer);
 
 		return notification_bytes;
+	}
+
+	pub fn len(&self) -> usize {
+		match *self {
+			BatchNotifications(ref vec) => vec.len()
+		}
 	}
 }
